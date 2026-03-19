@@ -57,7 +57,7 @@ class TestScriptImports(unittest.TestCase):
         """Test importing tts_bridge"""
         try:
             from scripts import tts_bridge
-            self.assertTrue(hasattr(tts_bridge, 'TTSService'))
+            self.assertTrue(hasattr(tts_bridge, 'TTSBridge'))
         except ImportError as e:
             self.fail(f"Failed to import tts_bridge: {e}")
 

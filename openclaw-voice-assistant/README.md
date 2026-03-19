@@ -21,22 +21,53 @@ A complete voice-enabled AI assistant that integrates with Xiaomi smart speakers
 - **Smart Text Filtering**: Automatically skips code, links, and unsuitable content
 - **Configurable**: Easy setup with environment variables
 - **Modular Design**: Clean separation of concerns
+- **Docker Support**: Containerized deployment
+- **CI/CD Pipeline**: Automated testing and deployment
+- **Comprehensive Testing**: Unit and integration tests
 
 ## Quick Start
 
-### 1. Installation
+### Option 1: Docker (Recommended)
 ```bash
-git clone https://github.com/yourusername/openclaw-voice-assistant.git
+# Clone the repository
+git clone https://github.com/leilei926524-tech/openclaw-voice-assistant.git
 cd openclaw-voice-assistant
-pip install -r requirements.txt
-```
 
-### 2. Configuration
-Copy the example configuration:
-```bash
+# Copy and configure environment
 cp .env.example .env
+# Edit .env with your Xiaomi credentials
+
+# Run with Docker Compose
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
 ```
 
+### Option 2: Python Installation
+```bash
+# Clone the repository
+git clone https://github.com/leilei926524-tech/openclaw-voice-assistant.git
+cd openclaw-voice-assistant
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configuration
+cp .env.example .env
+# Edit .env with your settings
+
+# Get Device ID
+python scripts/discover_devices.py
+
+# Test Voice
+python scripts/test_voice.py "Hello, this is a test"
+
+# Start Interactive Chat
+python scripts/interactive_chat.py
+```
+
+### Configuration
 Edit `.env` with your settings:
 ```env
 # Xiaomi Account Settings
@@ -47,22 +78,10 @@ XIAOMI_DEVICE_ID=your_device_id
 # Samantha Settings
 SAMANTHA_DATA_DIR=./data
 SAMANTHA_PERSONALITY_SEEDS=./personality_seeds
-```
 
-### 3. Get Device ID
-Run the device discovery script:
-```bash
-python scripts/discover_devices.py
-```
-
-### 4. Test Voice
-```bash
-python scripts/test_voice.py "Hello, this is a test"
-```
-
-### 5. Start Interactive Chat
-```bash
-python scripts/interactive_chat.py
+# Application Settings
+DEBUG=false
+LOG_LEVEL=INFO
 ```
 
 ## Project Structure
@@ -72,6 +91,8 @@ openclaw-voice-assistant/
 ├── README.md                 # This file
 ├── requirements.txt          # Python dependencies
 ├── .env.example             # Example configuration
+├── Dockerfile               # Docker container definition
+├── docker-compose.yml       # Docker Compose configuration
 ├── scripts/
 │   ├── voice_assistant.py   # Core voice assistant
 │   ├── tts_bridge.py        # Xiaomi TTS integration
@@ -79,6 +100,11 @@ openclaw-voice-assistant/
 │   ├── interactive_chat.py  # Interactive chat interface
 │   ├── test_voice.py        # Voice testing
 │   └── discover_devices.py  # Device discovery
+├── tests/                   # Test suite
+│   ├── __init__.py
+│   └── test_basic.py       # Basic tests
+├── .github/workflows/       # CI/CD pipelines
+│   └── test.yml            # Automated testing
 ├── assets/
 │   └── personality_seeds/   # Samantha personality templates
 ├── data/                    # Data storage (created automatically)
@@ -194,22 +220,84 @@ python scripts/interactive_chat.py
 - Use environment variables in production
 - Regular credential rotation recommended
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+## Development
 
 ### Development Setup
 ```bash
-git clone https://github.com/yourusername/openclaw-voice-assistant.git
+# Clone repository
+git clone https://github.com/leilei926524-tech/openclaw-voice-assistant.git
 cd openclaw-voice-assistant
+
+# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements-dev.txt
+
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install development dependencies
+pip install -r requirements.txt
+pip install pytest pytest-cov pytest-asyncio flake8 black
+
+# Run tests
+pytest tests/ -v
+
+# Run linting
+flake8 scripts/ --max-line-length=127
+
+# Format code
+black scripts/
 ```
+
+### Running Tests
+```bash
+# Run all tests
+pytest tests/ -v
+
+# Run tests with coverage
+pytest tests/ --cov=scripts --cov-report=html
+
+# Run specific test file
+pytest tests/test_basic.py -v
+```
+
+### CI/CD Pipeline
+The project includes GitHub Actions for:
+- **Automated Testing**: Runs on every push and pull request
+- **Code Quality**: Flake8 linting and security scanning
+- **Coverage Reports**: Code coverage tracking
+- **Weekly Scheduled Runs**: Regular maintenance checks
+
+View workflow status at: https://github.com/leilei926524-tech/openclaw-voice-assistant/actions
+
+## Contributing
+
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. **Make your changes**
+4. **Add tests** for new functionality
+5. **Run tests** to ensure everything works
+6. **Update documentation** if needed
+7. **Submit a pull request**
+
+### Pull Request Guidelines
+- Include a clear description of changes
+- Add tests for new features
+- Update documentation as needed
+- Ensure code passes linting and tests
+- Follow the existing code style
+
+### Code Style
+- Use Black for code formatting
+- Follow PEP 8 guidelines
+- Maximum line length: 127 characters
+- Use type hints where appropriate
+- Add docstrings for public functions
 
 ## License
 

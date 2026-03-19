@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  openclaw-voice-assistant:
+    build: .
+    container_name: openclaw-voice-assistant
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config:/app/config
+    environment:
+      - XIAOMI_USERNAME=${XIAOMI_USERNAME:-}
+      - XIAOMI_PASSWORD=${XIAOMI_PASSWORD:-}
+      - XIAOMI_DEVICE_ID=${XIAOMI_DEVICE_ID:-}
+      - TZ=Asia/Shanghai
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    networks:
+      - openclaw-network
+
+  # Web interface (future feature)
+  # web-interface:
+  #   build: ./web
+  #   container_name: openclaw-web
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - openclaw-voice-assistant
+  #   environment:
+  #     - API_URL=http://openclaw-voice-assistant:8080
+  #   networks:
+  #     - openclaw-network
+
+  # Database (future feature)
+  # database:
+  #   image: postgres:15-alpine
+  #   container_name: openclaw-db
+  #   restart: unless-stopped
+  #   environment:
+  #     - POSTGRES_DB=openclaw
+  #     - POSTGRES_USER=openclaw
+  #     - POSTGRES_PASSWORD=${DB_PASSWORD:-openclaw123}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - openclaw-network
+
+networks:
+  openclaw-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  data:
+  logs:
+  config:
